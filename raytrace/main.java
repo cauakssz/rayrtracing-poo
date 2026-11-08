@@ -25,12 +25,10 @@ class Main {
 	static vec3 SPHEREVEL     = new vec3( 0.0f,  0.0f,  0.0f);
 	static float SPHERERADIUS = 0.9f;
 
-	// em Java, char 176..219 sao outros simbolos; use os blocos Unicode
 	static char[] SHADES = {' ', ' ', '\u2591', '\u2591', '\u2592', '\u2592', '\u2593', '\u2593', '\u2588', '\u2588'};
 
 	static int COLUMNS, ROWS;
 
-	// no C, eye e view eram passados por ponteiro; aqui viram campos estaticos
 	static vec3 eye  = new vec3(-4.0f, 1.5f, 0.0f);
 	static vec3 view = norm(new vec3(1.0f, -0.1f, 0.0f));
 
@@ -125,7 +123,7 @@ class Main {
 				}
 				else if( intersectSphere(viewRay, normal) ) {
 					light = (int)(5*(dot(normal.d, norm(sub(LIGHTPOS, normal.o))) + 1));
-					light = Math.min(light, 9); // no C isso podia estourar o vetor
+					light = Math.min(light, 9); 
 				}
 				else if( intersectPlane(viewRay, normal, shadow) ) {
 					float direct = CLAMP(9.0f - 0.25f*distance(normal.o, flat(LIGHTPOS)), 2.0f, 9.0f);
@@ -143,7 +141,7 @@ class Main {
 			if(cy < ROWS/2 - 1) screen.append('\n');
 		}
 
-		out.print("\033[H"); // volta o cursor para o topo
+		out.print("\033[H");
 		out.print(screen);
 		out.flush();
 	}
@@ -164,12 +162,11 @@ class Main {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		// Java nao tem GetConsoleScreenBufferInfo, entao o tamanho e fixo
 		COLUMNS = 120;
 		ROWS = 30;
 
 		out = new PrintStream(new FileOutputStream(FileDescriptor.out), false, StandardCharsets.UTF_8);
-		out.print("\033[2J"); // limpa a tela
+		out.print("\033[2J");
 
 		float t = 0.0f;
 

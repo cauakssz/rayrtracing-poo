@@ -8,7 +8,7 @@ title ASCII Ray Tracing
 
 echo Compilando projeto...
 
-javac -encoding UTF-8 -d . raytrace\main.java raytrace\vec3.java raytrace\ray.java
+javac -encoding UTF-8 -sourcepath . -d . raytrace\main.java
 
 if errorlevel 1 (
     echo.

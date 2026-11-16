@@ -8,7 +8,7 @@ A cena apresenta uma esfera em movimento, uma fonte de luz e um plano que recebe
 
 A imagem é construída utilizando caracteres Unicode de diferentes intensidades, simulando sombreamento e iluminação sem a necessidade de uma interface gráfica.
 
-O código foi organizado seguindo os princípios da **Programação Orientada a Objetos (POO)**: cada elemento da cena (luz, esfera, plano e câmera) é representado por uma classe com seus próprios dados e comportamentos.
+O código foi organizado seguindo os princípios da **Programação Orientada a Objetos (POO)**: cada elemento da cena (luz, esfera, plano e câmera) é representado por uma classe com seus próprios dados e comportamentos. A cena, a renderização e a saída no terminal também possuem classes próprias.
 
 ## Demonstração
 
@@ -23,7 +23,7 @@ O código foi organizado seguindo os princípios da **Programação Orientada a 
 ## Tecnologias utilizadas
 
 - **Java 16+:** linguagem utilizada no desenvolvimento.
-- **Programação Orientada a Objetos:** classes, encapsulamento, imutabilidade, interfaces e polimorfismo.
+- **Programação Orientada a Objetos:** classes, encapsulamento, imutabilidade, interfaces, classes abstratas, herança, polimorfismo, composição e enumerações.
 - **Java Math:** operações matemáticas e cálculos geométricos.
 - **Ray Tracing:** técnica utilizada para calcular interseções e iluminação.
 - **Terminal UTF-8:** exibição dos caracteres utilizados na renderização.
@@ -35,32 +35,45 @@ O código foi organizado seguindo os princípios da **Programação Orientada a 
 rayrtracing-poo/
 │
 ├── raytrace/
-│   ├── main.java    # Cena, classes dos objetos, iluminação e renderização
-│   ├── vec3.java    # Vetor 3D imutável e suas operações matemáticas
-│   └── ray.java     # Raio imutável (origem e direção)
+│   ├── main.java        # Ponto de entrada: monta a cena e controla o loop de animação
+│   ├── vec3.java        # Vetor 3D imutável e suas operações matemáticas
+│   ├── ray.java         # Raio imutável (origem e direção)
+│   ├── Hit.java         # Resultado imutável de uma interseção
+│   ├── Surface.java     # Interface: contrato de tudo que aparece na cena
+│   ├── SceneObject.java # Classe abstrata: comportamento padrão das superfícies
+│   ├── Sphere.java      # Esfera com gravidade e quique
+│   ├── Plane.java       # Chão que recebe sombras
+│   ├── Light.java       # Fonte de luz e efeito de brilho (bloom)
+│   ├── Camera.java      # Câmera que gira ao redor da cena
+│   ├── Scene.java       # Reúne câmera, luz e superfícies
+│   ├── Renderer.java    # Calcula o brilho de cada pixel e monta o quadro
+│   ├── Shade.java       # Enumeração dos caracteres de intensidade
+│   ├── Terminal.java    # Saída no terminal (UTF-8 e ANSI)
+│   └── FloatMath.java   # Função utilitária clamp
 │
 ├── README.md
-└── make.bat         # Script de compilação e execução (opcional)
+└── make.bat             # Script de compilação e execução (opcional)
 ```
 
-### Organização dos componentes
+### Papel de cada classe
 
-| Arquivo     | Responsabilidade                                                                                                                         |
-|-------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| `main.java` | Contém a interface `Surface` e as classes `Light`, `Sphere`, `Plane` e `Camera`, além do cálculo de brilho, da renderização e da animação. |
-| `vec3.java` | Implementação de vetores tridimensionais imutáveis e de suas operações matemáticas.                                                      |
-| `ray.java`  | Representação imutável de um raio por meio de sua origem e direção.                                                                      |
-
-### Classes dentro do `main.java`
-
-| Classe / Interface | Papel                                                                                          |
-|--------------------|------------------------------------------------------------------------------------------------|
-| `Surface`          | Interface: define que toda superfície sabe calcular a interseção com um raio (`intersect`).    |
-| `Sphere`           | Esfera que implementa `Surface`. Guarda centro, velocidade e raio, e simula gravidade e quique. |
-| `Plane`            | Plano (chão) que implementa `Surface`. Também gera o raio de sombra em direção à luz.          |
-| `Light`            | Fonte de luz. Sabe se um raio a atinge (`intersects`) e calcula o brilho ao redor (`bloom`).   |
-| `Camera`           | Guarda posição e direção do olhar, monta o raio de cada pixel (`viewRay`) e gira (`rotateY`).  |
-| `Main`             | Cria os objetos, calcula o brilho de cada pixel (`shade`), desenha a tela e controla o loop.   |
+| Classe / Interface | Papel                                                                                                              |
+|--------------------|--------------------------------------------------------------------------------------------------------------------|
+| `vec3`             | Vetor tridimensional imutável com as operações matemáticas.                                                        |
+| `ray`              | Raio imutável: origem e direção.                                                                                   |
+| `Hit`              | Resultado imutável de uma interseção: superfície atingida, ponto, normal e distância.                              |
+| `Surface`          | Interface: toda superfície calcula a interseção com um raio, o próprio brilho e a sombra que projeta.              |
+| `SceneObject`      | Classe abstrata que implementa `Surface` com o comportamento padrão (sem sombra, sem animação, não é fundo).       |
+| `Sphere`           | Estende `SceneObject`. Guarda centro, velocidade e raio, simula gravidade e quique e projeta sombra.               |
+| `Plane`            | Estende `SceneObject`. É o chão: calcula o próprio brilho considerando as sombras da cena.                         |
+| `Light`            | Estende `SceneObject`. Fonte de luz visível; sabe a direção até ela e calcula o brilho ao redor (`bloom`).         |
+| `Camera`           | Guarda posição e direção do olhar, monta o raio de cada pixel (`viewRay`) e gira a cada atualização (`update`).    |
+| `Scene`            | Composição de câmera, luz e lista de `Surface`. Encontra a interseção mais próxima e atualiza todos os objetos.    |
+| `Renderer`         | Calcula o brilho de cada pixel e monta o quadro de caracteres.                                                     |
+| `Shade`            | Enumeração dos caracteres de intensidade; converte brilho (0 a 9) em caractere.                                    |
+| `Terminal`         | Escreve no terminal em UTF-8 e controla a tela com códigos ANSI.                                                   |
+| `FloatMath`        | Classe utilitária com a função `clamp`.                                                                            |
+| `Main`             | Em `main.java`: monta a cena e executa o loop de animação.                                                         |
 
 ## Requisitos
 
@@ -95,10 +108,12 @@ cd rayrtracing-poo
 ### 3. Compile os arquivos
 
 ```
-javac -encoding UTF-8 -d . raytrace/main.java raytrace/vec3.java raytrace/ray.java
+javac -encoding UTF-8 -sourcepath . -d . raytrace/main.java
 ```
 
-Se nenhum erro for apresentado, a compilação foi concluída com sucesso.
+O compilador encontra e compila automaticamente as demais classes do pacote `raytrace` a partir de `main.java`. Se nenhum erro for apresentado, a compilação foi concluída com sucesso.
+
+Se você compilou uma versão anterior do projeto, apague os arquivos `.class` antigos da pasta `raytrace` antes de compilar.
 
 ### 4. Configure a codificação do terminal
 
@@ -138,6 +153,8 @@ São utilizados caracteres Unicode de sombreamento:
 | ▓         | Alta                   |
 | █         | Máxima                 |
 
+O brilho calculado para cada pixel (de 0 a 9) é convertido em caractere pela enumeração `Shade`, que agrupa dois níveis de brilho por caractere.
+
 ### Iluminação e sombras
 
 O projeto calcula a interação dos raios com os elementos da cena, considerando:
@@ -165,7 +182,9 @@ Durante sua implementação, são trabalhados conceitos como:
 
 - Classes, objetos, atributos e métodos.
 - Encapsulamento e imutabilidade.
-- Interfaces e polimorfismo.
+- Interfaces, classes abstratas e herança.
+- Polimorfismo e sobrescrita de métodos.
+- Enumerações e classes utilitárias.
 - Responsabilidade única e composição.
 - Vetores e operações matemáticas tridimensionais.
 - Geometria analítica.

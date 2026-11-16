@@ -167,12 +167,9 @@ O projeto calcula a interação dos raios com os elementos da cena, considerando
 
 ### Animação
 
-A movimentação da cena é realizada por atualizações sucessivas de posição e velocidade.
+A movimentação da cena é realizada por atualizações sucessivas de posição e velocidade. A esfera sofre a influência da gravidade e inverte sua velocidade vertical ao atingir o plano. Simultaneamente, a câmera realiza uma rotação em torno da cena.
 
-A esfera sofre a influência da gravidade e inverte sua velocidade vertical ao atingir o plano. Simultaneamente, a câmera realiza uma rotação em torno da cena.
-
-A animação possui duração aproximada de **30 segundos**, com atualização planejada em intervalos de aproximadamente 33 milissegundos.
-
+![ASCII Ray Tracing - Demonstração](bouncingball.gif)
 
 ## Objetivo acadêmico
 
@@ -194,6 +191,3 @@ Durante sua implementação, são trabalhados conceitos como:
 - Simulação física básica.
 - Animação e renderização no terminal.
 
-## Demonstração
-
-![ASCII Ray Tracing - Demonstração](bouncingball.gif)

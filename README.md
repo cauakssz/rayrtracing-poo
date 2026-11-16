@@ -108,7 +108,7 @@ cd rayrtracing-poo
 ### 3. Compile os arquivos
 
 ```
-javac -encoding UTF-8 -sourcepath . -d . raytrace/main.java
+javac -encoding UTF-8 -d . raytrace\*.java
 ```
 
 O compilador encontra e compila automaticamente as demais classes do pacote `raytrace` a partir de `main.java`. Se nenhum erro for apresentado, a compilação foi concluída com sucesso.
@@ -193,3 +193,7 @@ Durante sua implementação, são trabalhados conceitos como:
 - Iluminação e sombreamento.
 - Simulação física básica.
 - Animação e renderização no terminal.
+
+## Demonstração
+
+![ASCII Ray Tracing - Demonstração](bouncingball.gif)
